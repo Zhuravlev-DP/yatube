@@ -20,12 +20,6 @@ class PostForm(forms.ModelForm):
             'group': 'Группа, к которой будет относиться пост'
         }
 
-    def clean_subject(self):
-        text = self.cleaned_data['text']
-        if text == '':
-            raise forms.ValidationError('Поле не заполнено')
-        return text
-
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -37,9 +31,3 @@ class CommentForm(forms.ModelForm):
         help_texts = {
             'text': 'Новый комментарий поста',
         }
-
-    def clean_subject(self):
-        text = self.cleaned_data['text']
-        if text == '':
-            raise forms.ValidationError('Поле не заполнено')
-        return text

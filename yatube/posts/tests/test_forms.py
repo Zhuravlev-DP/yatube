@@ -9,6 +9,15 @@ from django.conf import settings
 from posts.models import Group, Post, User, Comment
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+SMALL_GIF = (
+    b'\x47\x49\x46\x38\x39\x61\x02\x00'
+    b'\x01\x00\x80\x00\x00\x00\x00\x00'
+    b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+    b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+    b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+    b'\x0A\x00\x3B'
+)
+IMAGE_NAME = 'small.gif'
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -37,17 +46,10 @@ class PostFormTests(TestCase):
     def test_post_create_form_authorized_client(self):
         """Тестирование создания нового поста"""
         posts_count = Post.objects.count()
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
+
         uploaded = SimpleUploadedFile(
-            name='small.gif',
-            content=small_gif,
+            name=IMAGE_NAME,
+            content=SMALL_GIF,
             content_type='image/gif',
         )
         form_data = {
@@ -71,7 +73,7 @@ class PostFormTests(TestCase):
         self.assertTrue(Post.objects.filter(
             text=form_data['text'],
             group=self.group.pk,
-            image='posts/small.gif',
+            image=f'posts/{IMAGE_NAME}',
         ).exists())
 
     def test_post_edit_form(self):
